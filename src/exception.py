@@ -1,6 +1,6 @@
 import sys #acces to variables of python environment
 import logging
-import logger
+from src.logger import logging
 
 #Whenever an error raises, this function is called:
 
