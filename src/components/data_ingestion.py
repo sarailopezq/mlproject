@@ -9,6 +9,9 @@ from dataclasses import dataclass #use to create class variables
 from src.components.data_transformation import DataTransformation
 from src.components.data_transformation import DataTransformationConfig
 
+from src.components.model_trainer import ModelTrainerConfig, ModelTrainer
+
+
 # from pathlib import Path
 # sys.path.append(str(Path(__file__).parent.parent))
 
@@ -61,6 +64,13 @@ if __name__ == '__main__':
     obj = DataIngestion()
     train_data, test_data = obj.inititate_data_ingestion()
     data_transformation = DataTransformation() #initialize data transformation
-    data_transformation.initiate_data_transformation(train_data, test_data)
+    #data_transformation.initiate_data_transformation(train_data, test_data)
+
+    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data, test_data)
+
+    modeltrainer = ModelTrainer()
+    print(modeltrainer.initiate_model_trainer(train_arr, test_arr))
+
+
 
     
