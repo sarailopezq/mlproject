@@ -24,6 +24,7 @@ def save_object(file_path, obj):
 def evaluate_model(X_train, y_train, X_test, y_test, models, param):
     try:
         report = {}
+        best_parameters = {}
         for i in range(len(list(models))):
             model = list(models.values())[i]
             para = param[list(models.keys())[i]]
@@ -44,10 +45,11 @@ def evaluate_model(X_train, y_train, X_test, y_test, models, param):
             train_model_score = r2_score(y_train, y_train_pred)
 
             test_model_score = r2_score(y_test, y_test_pred)
-
+            
+            best_parameters[list(models.keys())[i]] = gs.best_params_ ##added by me
             report[list(models.keys())[i]] = test_model_score
 
-        return report
+        return report, best_parameters
 
     except Exception as e:
         raise CustomException(e, sys)

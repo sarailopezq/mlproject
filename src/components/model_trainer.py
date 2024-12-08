@@ -72,6 +72,11 @@ class ModelTrainer:
                     'n_estimators': [8,16,32,64,128,256]
                 },
                 "Linear Regression":{},
+                "K-Neighbors Classifier": {
+                    'n_neighbors': [5,7,9,11]
+                    # 'weights' : ['uniform', 'distance']
+                    # 'algorithm': ['ball_tree', 'kd_tree', 'brute']
+                },
                 "XGBRegressor":{
                     'learning_rate':[.1,.01,.05,.001],
                     'n_estimators': [8,16,32,64,128,256]
@@ -90,7 +95,9 @@ class ModelTrainer:
             }
 
             #create dictionary and create a function
-            model_report:dict=evaluate_model(X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test, models = models, param = params) #function created in utils
+            model_report:dict
+            model_parameters:dict 
+            model_report, model_parameters =evaluate_model(X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test, models = models, param = params) #function created in utils
 
             ## To get best model score from dict:
             best_model_score = max(sorted(model_report.values()))
@@ -98,7 +105,11 @@ class ModelTrainer:
             ## To get best model name from dict:
             best_model_name = list(model_report.keys())[list(model_report.values()).index(best_model_score)]
 
-            best_model = models[best_model_name]
+            best_params = model_parameters[best_model_name] #added by me
+            #best_model = models[best_model_name]
+            best_model = models[best_model_name].set_params(**best_params) #added by me
+            logging.info(f"Best model was {best_model_name}" ) ## added by me
+            #logging.info(f"Best parameter set was {best_params}" ) ##added by me, didn't work
 
             if best_model_score < 0.6:
                 raise CustomException("No best model found")
@@ -116,7 +127,17 @@ class ModelTrainer:
 
             predicted = best_model.predict(X_test)
             r2_square = r2_score(y_test, predicted)
-            return r2_square
+            # the following values will be the displayed when executing the program
+            #print(best_params) #added by me
+            #print(best_model_name) #added by me
+            #return r2_square
+            print(model_report)#added by me
+            #print(list(model_report.keys()))#added by me
+            #print(list(model_report.values()))#added by me
+            print(model_parameters)#added by me
+            #print(list(model_parameters.values()))#added by me
+            print(model_parameters['XGBRegressor'])#added by me
+            return r2_square, best_model_name, best_params  #added by me
 
 
         except Exception as e:
